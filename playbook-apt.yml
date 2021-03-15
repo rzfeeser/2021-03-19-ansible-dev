@@ -1,0 +1,32 @@
+---
+- name: Playbook - Install figlet
+  #hosts: planetexpress:!farnsworth
+  hosts: planetexpress
+  gather_facts: yes   # default is yes
+  connection: ssh     # default is ssh
+
+  tasks:
+
+  - name: using apt to REMOVE figlet
+    apt:
+        name: figlet
+        state: absent
+    become: yes
+    when: ansible_bios_vendor == "SeaBIOS"
+
+  - name: determine if a file exists
+    stat:
+        path: ~/visa.txt
+    register: results    # results is a variable we just created
+
+  - name: get a visual on the data we just created
+    debug:
+        var: results
+        verbosity: 1
+
+  - name: touch a file
+    file:
+        name: ~/visa.txt
+        state: touch
+    when: not results.stat.exists
+    #when: results.stat.exists != True
