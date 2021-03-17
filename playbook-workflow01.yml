@@ -1,0 +1,34 @@
+---
+- name: Ansible PB pulling crid with error handling
+  hosts: localhost
+
+  tasks:
+          #preprov (policy checking... approvals)
+          #     if fails: STOP,ALERT(email)
+          #
+          #precheck pull crid
+          #     if fails: TRY for 5 mins
+          #     elif fails 5 mins: STOP,ALERT(email)
+          #
+          #work to do (isilon)
+          #     if fails: ROLLBACK
+          #
+          #post checks (did the isilon work, work???)
+          #     if fails: ROLLBACK
+          #
+          #post prov (email / celebrate)
+
+          # PRECHECK STEP
+          - name: Pause play until a URL is reachable from this host
+            uri:
+              url: http://0.0.0.0:9876/crid
+              follow_redirects: none
+              method: GET
+            register: result
+            until: result.status == 200
+            retries: 24 # 5 seconds * 24 retries
+            delay: 5 # Every 5 seconds
+
+          - name: Show the value we captured
+            debug:
+                    var: result.json
