@@ -1,0 +1,9 @@
+---
+# vars file for /home/student/ans/roles/alta3.webservice
+pw: pass123
+
+pw1: tosomeotherpass
+
+pwlist:
+        - pass123
+        - someotherpass

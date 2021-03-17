@@ -1,0 +1,11 @@
+---
+- name: Exploring the template module and jinja expressions
+  hosts: planetexpress
+  gather_facts: no   # runs the "setup" module on remote hosts
+
+  tasks:
+    - name: template module wiht loop
+      template:
+              dest: "~/{{ item.mission }}-mission-orders.txt"
+              src: "templates/mission-orders.txt.j2"
+      loop: [{"mission": "primary", "planet": "luna park"}, {"mission": "secondary", "planet": "cineplex 14"}]

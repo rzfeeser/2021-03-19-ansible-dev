@@ -1,0 +1,12 @@
+- name: Using a role to deploy a webservice
+  hosts: web
+  gather_facts: no
+  become: yes
+  
+  #roles:
+  #  - roles/alta3.webservice
+
+  tasks:
+          - name: Build a Visa Webserver
+            import_role:
+                    name: roles/alta3.webservice

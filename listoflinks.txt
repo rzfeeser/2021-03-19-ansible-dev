@@ -1,2 +1,9 @@
 https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html
+
 https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html
+
+https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+
+https://github.com/ansible/awx
+
+https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html
