@@ -1,0 +1,16 @@
+---
+# vars file for roles/isilon-buildstorage
+# security vars
+onefs_host: 192.168.3.11    # IP address of FQDN of the Isilon cluster
+isilon_port: 8080           # defaults to 8080
+api_user: root              # mandatory - username for the REST API
+api_password: "passwordHERE!"  # mandatory - password for the REST API
+verify_ssl: False           # mandatory - bool
+
+# storage vars
+req_quota: 1 # size in GB greater than 1 and less than 10
+base_path: "/ifs/globaluni"
+access_control: "0755"
+access_zone: "System"
+# list of users we want to provision storage for 
+users: []

@@ -2,13 +2,22 @@
 - name: Ansible PB pulling crid with error handling
   hosts: localhost
 
-  vars:
-          req_quota: 1 # size in GB greater than 1 and less than 10
+  collections:
+          - dellemc.isilon
 
+  vars:
+          # security vars
+          onefs_host: 192.168.3.11    # IP address of FQDN of the Isilon cluster
+          isilon_port: 8080           # defaults to 8080
+          api_user: root              # mandatory - username for the REST API
+          api_password: "Dees12345!"  # mandatory - password for the REST API
+          verify_ssl: False           # mandatory - bool
+
+          # storage vars
+          req_quota: 1 # size in GB greater than 1 and less than 10
           base_path: "/ifs/globaluni"
           access_control: "0755"
           access_zone: "System"
- 
           # list of users we want to provision storage for 
           users:
                   - peterParker
@@ -16,6 +25,12 @@
                   - natashaRomanoff
                   - wandaMaximoff
                   - scottLang
+
+          # a list of policies we want to enforce during preprovisioning
+          policy:
+                  - req_quota < 10   # ensure the requested quota is less than 10GB
+                  - req_quota >= 1
+                  - ( users is defined ) and ( users | type_debug == "list" )
 
   tasks:
           #preprov (policy checking... approvals)
@@ -41,10 +56,7 @@
           # assert implies the when conditional
           - name: Simple prepovisioning steps (ensure policy is not being broken)
             assert:
-              that:
-                - req_quota < 10   # ensure the requested quota is less than 10GB
-                - req_quota >= 1
-                - ( users is defined ) and ( users | type_debug == "list" )
+              that: "{{ policy }}"
               fail_msg: "Request violates policy. Cannot use SaaS to provision. Make ticket request."
               success_msg: "Policy checks passed"
            
@@ -77,7 +89,7 @@
   # WORK TO DO (ISILON)
   - name: Change Operation
     block:
-          - name: "CHANGE - Create Filesystem with Quota for {{ item }}"
+          - name: "CHANGE - Create Filesystem with Quota"
             dellemc_isilon_filesystem:
                     onefs_host: "{{ onefs_host }}"
                     port_no: "{{ isilon_port }}"
@@ -98,7 +110,7 @@
             debug:
                     msg: An error was encountered. Attempting rollback.
 
-          - name: "RESCUE - Remove filesystem with Quota for {{ item }}"
+          - name: "RESCUE - Remove filesystem with Quota"
             dellemc_isilon_filesystem:
                     onefs_host: "{{ onefs_host }}"
                     port_no: "{{ isilon_port }}"

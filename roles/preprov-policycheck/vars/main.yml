@@ -1,0 +1,6 @@
+---
+# vars file for roles/preprov-policycheck
+policy:
+        - req_quota < 10   # ensure the requested quota is less than 10GB
+        - req_quota >= 1
+        - ( users is defined ) and ( users | type_debug == "list" )

@@ -1,0 +1,67 @@
+---
+- name: Ansible PB pulling crid with error handling
+  hosts: localhost
+
+  collections:
+          - dellemc.isilon
+
+  vars:
+          # security vars
+          onefs_host: 192.168.3.11    # IP address of FQDN of the Isilon cluster
+          isilon_port: 8080           # defaults to 8080
+          api_user: root              # mandatory - username for the REST API
+          api_password: "passHERE!"   # mandatory - password for the REST API
+          verify_ssl: False           # mandatory - bool
+
+          # storage vars
+          req_quota: 1 # size in GB greater than 1 and less than 10
+          base_path: "/ifs/globaluni"
+          access_control: "0755"
+          access_zone: "System"
+          # list of users we want to provision storage for 
+          users:
+                  - peterParker
+                  - lukeCage
+                  - natashaRomanoff
+                  - wandaMaximoff
+                  - scottLang
+
+          policy: []
+
+
+  tasks:
+  # preprovisioning:
+  #     - assert policy (defined by variable "policy")
+  #     - if any fails: STOP THE PLAYBOOK
+  - name: PREPROVISIONING PHASE - asserting that policy is not being violated
+    block:
+            - name: Storage Policy Check (ensuring request does not violate policy)
+              import_role:
+                      name: preprov-policycheck
+
+  # precheck:
+  #     - pull CRQid
+  #     - if any fails: STOP THE PLAYBOOK
+  - name: PRECHECK PHASE - Request CRQid
+    block:
+            - name: Pull CRQid from internal RESTful API
+              import_role:
+                      name: precheck-crqid    # dev by a software devops engineer, but we can all use it
+                                              # however, we might have additional precheck phase roles created by...
+                                              #  - unix devops engineers
+                                              #  - storage devops engineers
+            
+            - name: Perform Isilon prechecks # is firmware correct? expected number of enrollments?
+              import_role:
+                      name: precheck-isilon
+
+
+  # change-operation(s):                                  
+  #         - a list of "SaaS" roles to complete our work
+  #         - if any fails: ROLLBACK & STOP THE PLAYBOOK (these are built into the roles themselves)
+  - name: CHANGE OPERATION PHASE - Work we want to do to our isilon
+    block:
+          - name: CHANGE - Create Filesystem with Quota
+            import_role:
+                    name: isilon-buildstorage   # this would be built by a Storage Engineer                             <--- this role has block / rescue
+                                                # includes the rollback within the role (block / rescue)                <--- think in terms of NESTED block / rescue operations!!!

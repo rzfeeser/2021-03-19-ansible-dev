@@ -1,0 +1,8 @@
+---
+# vars file for roles/precheck-isilon
+# credentials for isilon
+onefs_host: 192.168.3.11    # IP address of FQDN of the Isilon cluster
+isilon_port: 8080           # defaults to 8080
+api_user: root              # mandatory - username for the REST API
+api_password: "apipassHERE!!"  # mandatory - password for the REST API
+verify_ssl: False           # mandatory - bool

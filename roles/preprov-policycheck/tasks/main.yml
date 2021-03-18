@@ -1,0 +1,13 @@
+---
+# tasks file for roles/preprov-policycheck
+# PREPROVISIONING
+- name: PREPROVISIONING - asserting that policy is not being violated
+  block:
+        # assert and fail are very close to one another
+        # fail requires a when conditional
+        # assert implies the when conditional
+        - name: Simple prepovisioning steps (ensure policy is not being broken)
+          assert:
+            that: "{{ policy }}"
+            fail_msg: "Request violates policy. Cannot use SaaS to provision. Make ticket request."
+            success_msg: "Policy checks passed"
