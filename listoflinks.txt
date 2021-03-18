@@ -7,3 +7,5 @@ https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#vari
 https://github.com/ansible/awx
 
 https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html
+
+https://roy.gbiv.com/pubs/dissertation/rest_arch_style.htm
