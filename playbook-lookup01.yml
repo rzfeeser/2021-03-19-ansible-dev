@@ -1,0 +1,12 @@
+---
+- name: Lookup plugin demo
+  hosts: localhost
+  connection: local
+
+  vars:
+          filecontents: "{{ lookup('file', '~/ans/files/fry.txt') }}"
+
+  tasks:
+          - name: display the contents of filecontents
+            debug:
+                    var: filecontents

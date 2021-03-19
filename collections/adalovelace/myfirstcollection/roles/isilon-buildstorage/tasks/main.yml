@@ -1,0 +1,41 @@
+---
+# tasks file for roles/isilon-buildstorage
+# WORK TO DO (ISILON)
+- name: Change Operation
+  block:
+        - name: "CHANGE - Create Filesystem with Quota"
+          dellemc_isilon_filesystem:
+                  onefs_host: "{{ onefs_host }}"
+                  port_no: "{{ isilon_port }}"
+                  verify_ssl: "{{ verify_ssl }}"
+                  api_user: "{{ api_user }}"
+                  api_password: "{{ api_password }}"
+                  path: "{{base_path}}/students/{{item}}"
+                  owner:
+                          name: "root"
+                          provider_type: 'file'
+                  access_control: "{{ access_control }}"
+                  recursive: True
+                  state: present
+          loop: "{{ users }}"
+
+  rescue:
+        - name: RESCUE - Start Rollback
+          debug:
+                  msg: An error was encountered. Attempting rollback.
+
+        - name: "RESCUE - Remove filesystem with Quota"
+          dellemc_isilon_filesystem:
+                  onefs_host: "{{ onefs_host }}"
+                  port_no: "{{ isilon_port }}"
+                  verify_ssl: "{{ verify_ssl }}"
+                  api_user: "{{ api_user }}"
+                  api_password: "{{ api_password }}"
+                  path: "{{base_path}}/students/{{item}}"
+                  owner:
+                          name: "root"
+                          provider_type: 'file'
+                  access_control: "{{ access_control }}"
+                  recursive: True
+                  state: absent
+          loop: "{{ users }}"

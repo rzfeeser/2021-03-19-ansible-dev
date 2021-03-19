@@ -1,0 +1,14 @@
+---
+- name: using our new collection
+  hosts: localhost
+  connection: local
+
+  collections:
+          - adalovelace.myfirstcollection
+
+  tasks:
+        # Obtain TODAYs APOD
+        - name: Lookup the NASA APOD API for TODAY in HD def
+          nasa_apod:
+            apikey: DEMO_KEY
+            dest: /home/student/static/apodToday.png    # save file as apodToday.png

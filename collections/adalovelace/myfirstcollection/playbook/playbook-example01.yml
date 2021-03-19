@@ -1,0 +1,28 @@
+---
+- name: use roles distributed with collection
+  hosts: localhost       # host we want to run the collection against
+  connection: local  # default connection type
+  gather_facts: no # no need to collect ansible_facts
+
+  # this is the collection we want to make part of this playbook namespace
+  collections:
+          - adalovelace.myfirstcollection
+            
+  # this role is within the collection adalovelace.myfirstcollection
+  #roles:    
+  #        - isilon-buildstorage
+  #        - precheck-crqid
+            
+  tasks:
+          - name: Run a role like a task
+            import_role:
+                    name: isilon-buildstorage
+
+          - name: Run a role like a task
+            import_role:
+                    name: precheck-crqid
+
+          - name: Tasks run after roles
+            debug:
+                    msg: "Great job! You used a role within the collection adalovelace.myfirstcollection"
+
